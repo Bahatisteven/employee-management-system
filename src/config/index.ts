@@ -8,3 +8,5 @@ interface ConfigI {
 export const config: ConfigI = {
   port: Number(process.env.PORT) || 3500,
 };
+
+export * from "./databaseConfig";
