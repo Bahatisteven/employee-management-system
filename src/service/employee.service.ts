@@ -1,4 +1,4 @@
-import { EmployeeModel } from "../model/employee";
+import { EmployeeModel } from "../model";
 import { EmployeeI, UpdateEmployeeI } from "../types";
 
 export class EmployeeService {
@@ -6,27 +6,35 @@ export class EmployeeService {
     return (await EmployeeModel.find()) as EmployeeI[];
   };
 
-  fetchEmployeeById = async (id: Object) => {
-    const employee = await EmployeeModel.findById(id);
+  employeeExist = async (id: object): Promise<boolean> => {
+    const value = await this.fetchEmployeeById(id);
+    return value !== null;
+  };
+
+  fetchEmployeeById = async (id: Object): Promise<EmployeeI> => {
+    const employee = (await EmployeeModel.findById(id)) as EmployeeI;
     return employee;
   };
 
-  createEmployee = async (emp: EmployeeI): Promise<EmployeeI> => {
+  createEmployee = async (emp: EmployeeI) => {
     const newEmployee = await EmployeeModel.create({
       ...emp,
     });
 
     await newEmployee.save();
 
-    return newEmployee as EmployeeI;
+    return newEmployee;
   };
 
   updateEmployee = async (emp: UpdateEmployeeI) => {
-    const employee = await EmployeeModel.updateOne({ ...emp });
-    return employee.modifiedCount;
+    const employee = await EmployeeModel.updateOne(
+      { _id: emp._id },
+      { ...emp }
+    );
+    return employee;
   };
   deleteEmployeeById = async (id: Object) => {
     const employee = await EmployeeModel.deleteMany({ _id: id });
-    return employee.deletedCount;
+    return employee;
   };
 }
